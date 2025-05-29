@@ -81,6 +81,7 @@
           <div class="flex items-center justify-between gap-3">
             <select
               [(ngModel)]="task.status"
+              (change)="onChangeStatus(task.id, task.status)"
               class="border border-gray-300 ml-8 w-[40%] rounded px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option *ngFor="let statuss of allStatus" [value]="statuss.value">

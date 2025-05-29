@@ -19,44 +19,46 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   styleUrl: './tasks.component.css'
 })
 export class TasksComponent implements OnInit {
+  // Available task statuses for filtering and display
   allStatus = [
-    {
-      label: 'Open',
-      value: 'OPEN'
-    },
-    {
-      label: 'In Progress',
-      value: 'IN_PROGRESS'
-    },
-    {
-      label: 'Done',
-      value: "DONE"
-    }
-  ]
+    { label: 'Open', value: 'OPEN' },
+    { label: 'In Progress', value: 'IN_PROGRESS' },
+    { label: 'Done', value: "DONE" }
+  ];
 
+  // UI state flags
   isLoading: boolean = false;
   loading: boolean = false;
   error: string = '';
   formError: string = "";
+
+  // Task list and filter
   tasks: Task[] = [];
   filteredTasks: Task[] = [];
   statusFilter: string = 'All';
+
+  // Modal control and form group for creating new task
   showNewTaskModal: boolean = false;
   createTaskForm: FormGroup;
+
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService,
     private sanitizer: DomSanitizer
   ) {
+    // Initialize the task creation form
     this.createTaskForm = this.fb.group({
       title: ['', [Validators.required]],
       description: ['']
     });
   }
 
+  // Fetch tasks on component initialization
   ngOnInit(): void {
     this.getAllTask();
   }
+
+  // Format ISO date string into readable format
   formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -67,7 +69,7 @@ export class TasksComponent implements OnInit {
     });
   }
 
-
+  // Return sanitized icon HTML based on task status
   getStatusIcon(status: TaskStatus): SafeHtml {
     let html = '';
     switch (status) {
@@ -86,6 +88,7 @@ export class TasksComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
+  // Return color class based on status for status badge
   getStatusColor = (status: TaskStatus) => {
     switch (status) {
       case 'DONE': return 'bg-green-100 text-green-800';
@@ -94,6 +97,7 @@ export class TasksComponent implements OnInit {
     }
   };
 
+  // Convert status enum to human-readable label
   getExactStatus(status: string): string {
     switch (status) {
       case 'DONE': return 'Done';
@@ -101,6 +105,8 @@ export class TasksComponent implements OnInit {
       default: return 'Open';
     }
   }
+
+  // Return badge color classes for status tags
   getStatusBadgeColor(status: TaskStatus): string {
     switch (status) {
       case 'DONE': return 'bg-green-100 text-green-800';
@@ -108,6 +114,8 @@ export class TasksComponent implements OnInit {
       default: return 'bg-gray-100 text-gray-800';
     }
   }
+
+  // Return top border color class for task cards
   getCardBorderColor(status: TaskStatus): string {
     switch (status) {
       case 'DONE': return 'border-t-2 border-t-green-300 ';
@@ -115,6 +123,8 @@ export class TasksComponent implements OnInit {
       default: return 'border-t-2 border-t-gray-300 ';
     }
   }
+
+  // Filter tasks based on selected status
   filterTask(): void {
     if (this.statusFilter === 'All') {
       this.filteredTasks = [...this.tasks];
@@ -123,45 +133,50 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  // Fetch all tasks from the service
   async getAllTask() {
     this.isLoading = true;
     try {
-      this.tasks = await this.taskService.fetchAllTasks();
+      this.tasks = await this.taskService.fetchAllTasks(); // Promise-based service method
       this.filterTask();
-      this.isLoading = false;
     } catch (error) {
-
+      console.error('Error fetching tasks', error);
+    } finally {
+      this.isLoading = false;
     }
   }
 
+  // Show modal to create a new task
   openModal(): void {
     this.showNewTaskModal = true;
   }
+
+  // Hide task creation modal and reset form
   closeModal(): void {
     this.showNewTaskModal = false;
     this.createTaskForm.reset();
   }
 
+  // Handle new task creation form submission
   async onSubmit() {
-    if (this.createTaskForm.invalid) {
-      return;
-    }
-    this.loading = true;
+    if (this.createTaskForm.invalid) return;
 
+    this.loading = true;
     try {
       const taskData = this.createTaskForm.value;
       await this.taskService.createTask(taskData);
       this.getAllTask();
+
       Swal.fire({
         position: 'center',
         icon: 'success',
         title: 'Task created successfully',
         showConfirmButton: false,
         timer: 1500
-      })
+      });
+
       this.createTaskForm.reset();
       this.showNewTaskModal = false;
-      this.loading = false;
     } catch (error: any) {
       console.error('Error creating task:', error);
       Swal.fire({
@@ -171,13 +186,12 @@ export class TasksComponent implements OnInit {
         showConfirmButton: false,
         timer: 1500
       });
-      this.loading = false;
-      return;
     } finally {
       this.loading = false;
     }
-
   }
+
+  // Delete a task after user confirmation
   onDeleteTask(taskId: string): void {
     Swal.fire({
       title: 'Are you sure?',
@@ -190,15 +204,16 @@ export class TasksComponent implements OnInit {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await this.taskService.deleteTask(taskId)
+          await this.taskService.deleteTask(taskId);
           this.getAllTask();
+
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Task deleted successfully',
             showConfirmButton: false,
             timer: 1500
-          })
+          });
         } catch (error: any) {
           console.error('Error deleting task:', error);
           Swal.fire({
@@ -207,16 +222,15 @@ export class TasksComponent implements OnInit {
             text: this.taskService.handleNestError(error),
             showConfirmButton: false,
             timer: 1500
-          })
-          return;
+          });
         } finally {
           this.loading = false;
         }
       }
-    })
-
+    });
   }
 
+  // Update task status after confirmation
   onChangeStatus(taskId: string, status: string): void {
     Swal.fire({
       title: 'Are you sure?',
@@ -229,15 +243,16 @@ export class TasksComponent implements OnInit {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await this.taskService.updateTaskStatus(taskId, status)
+          await this.taskService.updateTaskStatus(taskId, status);
           this.getAllTask();
+
           Swal.fire({
             position: 'center',
             icon: 'success',
             title: 'Task updated successfully',
             showConfirmButton: false,
             timer: 1500
-          })
+          });
         } catch (error: any) {
           console.error('Error updating task:', error);
           Swal.fire({
@@ -249,6 +264,6 @@ export class TasksComponent implements OnInit {
           });
         }
       }
-    })
+    });
   }
 }
