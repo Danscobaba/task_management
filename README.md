@@ -10,7 +10,7 @@ This is a **full-stack task management application** built using **NestJS** for 
 
 - ✅ Task entity with fields: `id`, `title`, `description`, `status`, `createdAt`, `updatedAt`
 - ✅ RESTful API with CRUD operations
-- ✅ In-memory or JSON file persistence (no full DB required)
+- ✅ In-memory array
 - ✅ Data validation using `ValidationPipe`
 - ✅ Global error handling with exceptions
 - ✅ CORS support for frontend integration
@@ -75,7 +75,7 @@ Validation ensures title is required and status is valid
 
 # Clone the repository and navigate to backend
 
-git clone <your-repo-url>
+git clone https://github.com/Danscobaba/task_management.git
 cd server
 
 # Install dependencies
