@@ -1,16 +1,25 @@
-<div class="h-screen py-10 px-6 bg-grey-100">
-  <div class="w-full max-w-4xl">
+<div class="h-screen py-10 px-6 bg-gray-100 flex justify-center">
+  <div class="w-full max-w-5xl bg-white rounded-xl shadow shadow-gray-300 py-6 px-4">
     <div class="">
       <h1 class="text-2xl font-bold text-grey-700">Task Management</h1>
       <p class="text-lg font-semibold text-grey-500">Organize and track your tasks efficiently</p>
     </div>
-    <div class="">
+    <div class="flex justify-between items-center my-10">
       <div class="flex">
-        
+        <div class="flex items-center">
+          <i class="bi bi-funnel-fill text-3xl text-blue-700 mr-2"></i>
+          <select [(ngModel)]="statusFilter" (change)="filterTask()"
+            class="border boder-gray-200 outline-none px-2 py-2 rounded-lg text-sm">
+            <option *ngFor="let item of allStatus" [value]="item.value">{{item.label}}</option>
+          </select>
+        </div>
       </div>
       <button class="bg-blue-700 text-white text-sm px-3 py-2 rounded-lg"><i
           class="bi bi-plus-lg text-white font-bold"></i>Add new
         task</button>
+    </div>
+    <div class="">
+      
     </div>
   </div>
 </div>
