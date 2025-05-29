@@ -13,10 +13,12 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: '*', // Allow all origins by default, can be overridden by environment variable
+    origin: 'http://localhost:4200', // Allow all origins by default, can be overridden by environment variable
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept, Authorization',
-  })
+  });
+
+  app.setGlobalPrefix('api/v1');
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

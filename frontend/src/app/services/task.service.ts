@@ -64,4 +64,31 @@ export class TaskService {
       });
     });
   }
+
+  handleNestError(error: any): string {
+  const res = error?.response;
+  if (res?.message) {
+    if (typeof res.message === 'string') {
+      return res.message;
+    }
+    // ValidationPipe/class-validator error array
+    if (Array.isArray(res.message)) {
+      return res.message[0];
+    }
+  }
+
+  // Fallback by status code
+  switch (error?.status) {
+    case 400: return 'Invalid input.';
+    case 401: return 'Unauthorized access.';
+    case 403: return 'Forbidden.';
+    case 404: return 'Resource not found.';
+    case 422: return 'Unprocessable entity.';
+    case 500: return 'Internal server error.';
+  }
+
+  return 'Something went wrong.';
+}
+  
+
 }

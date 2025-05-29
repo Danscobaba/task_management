@@ -18,7 +18,7 @@ export class TasksService {
   }
 
   findOne(id: string) {
-    const task = this.tasks.find(task => task.id === id);
+    const task = this.tasks.find((task) => task.id === id);
     if (!task) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
@@ -26,24 +26,26 @@ export class TasksService {
   }
 
   update(id: string, updateTaskDto: UpdateTaskDto) {
-
-    const taskIndex = this.tasks.findIndex(task => task.id === id);
+    const taskIndex = this.tasks.findIndex((task) => task.id === id);
     if (taskIndex === -1) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
 
-    const updatedTask = { ...this.tasks[taskIndex], ...updateTaskDto, updatedAt: new Date() };
+    const updatedTask = {
+      ...this.tasks[taskIndex],
+      ...updateTaskDto,
+      updatedAt: new Date(),
+    };
     this.tasks[taskIndex] = updatedTask;
     return updatedTask;
   }
 
   remove(id: string) {
-    const taskIndex = this.tasks.findIndex(task => task.id === id);
+    const taskIndex = this.tasks.findIndex((task) => task.id === id);
     if (taskIndex === -1) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
     const removedTask = this.tasks.splice(taskIndex, 1);
     return removedTask[0];
-
   }
 }

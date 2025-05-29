@@ -1,4 +1,4 @@
-import { TaskStatus } from "../dto/create-task.dto";
+import { TaskStatus } from '../dto/create-task.dto';
 import { v4 as uuidv4 } from 'uuid';
 export class Task {
   id: string;
@@ -8,9 +8,7 @@ export class Task {
   createdAt: Date;
   updatedAt: Date | null;
 
-  constructor(
-   title:string, description?:string
-  ) {
+  constructor(title: string, description?: string) {
     this.id = uuidv4(); // Assuming you have a UUID generation function
     this.title = title;
     this.description = description;
@@ -19,4 +17,3 @@ export class Task {
     this.updatedAt = null;
   }
 }
-
