@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Task } from '../../interfaces/task';
 
 @Component({
   selector: 'app-tasks',
@@ -7,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './tasks.component.css'
 })
 export class TasksComponent {
+  allStatus: Task[] = [
+    {
 
+    }
+  ]
 }
